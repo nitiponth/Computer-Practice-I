@@ -9,21 +9,26 @@ void loop() {
   x = PINB & 0b00011000;          //
   
   if(x==0x10){
+    while(x==0x10){
+       x = PINB & 0b00011000;
+    }
     do{
       PORTC = PORTC & 0xF0;
-      delay(500);
+      //delay(500);
       PORTC = PORTC | 0x01;
       delay(500);
-      PORTC = PORTC | 0x03;
+      PORTC = PORTC << 1;
       delay(500);
-      PORTC = PORTC | 0x07;
+      PORTC = PORTC << 1;
       delay(500);
-      PORTC = PORTC | 0x0F;
+      PORTC = PORTC << 1;
       delay(500);
 
       x = PINB & 0b00011000;
+    }while(!(x==0x08));
+    while(!(x==0x08)){
+      x = PINB & 0b00011000;
     }
-    while(!(x==0x08));
     PORTC = PORTC & 0xF0;
   }
 }
