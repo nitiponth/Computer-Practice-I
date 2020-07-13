@@ -3,7 +3,7 @@ void lcd_text(char text);
 void initial_LCD();
 void lcd_puts(char ch[]);
 
-float volt=0; char result[4];
+float volt=0; char result[4];int change = -1;
 void setup() {
   // put your setup code here, to run once:
   DDRC = 0x30;
@@ -11,21 +11,11 @@ void setup() {
   DDRB = 0xFC;
   PORTB = PORTB | 0b00000011;
   initial_LCD();
-  
-  dtostrf(volt, 2, 1, result);
-  
-  lcd_command(0x80);
-  lcd_puts("     Voltage");
-  lcd_command(0xc0);
-  lcd_puts("       ");
-  lcd_puts(result);
-  lcd_puts("  V");
-  
+  change = 1;
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int change = -1;
   if((PINB&0x01)==0){
     while((PINB&0x01)==0);
     change = 1;
