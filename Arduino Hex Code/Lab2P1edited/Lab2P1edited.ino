@@ -14,7 +14,7 @@ void setup() {
   initial_LCD();
 
   
-  B = 3.4;
+  B = 3.42;
   lcd_command(0x80);
   lcd_puts("B =: ");
   itoa((int)B,y,10);
@@ -43,12 +43,19 @@ void loop() {
   if(change = 1){
     lcd_command(0x80);
     lcd_puts("B =: ");
-    itoa((int)B,y,10);
+    /*itoa((int)B,y,10);
     lcd_puts(y); lcd_text('.');
-    z = (B-(int)B)*10;
+    z = (B-(int)B)*100;
+    if(z < 10)
+      lcd_puts('0');
     itoa(z,y,10);
     lcd_puts(y);
+    */
+    dtostrf(B,1,2,y);
+    lcd_puts(y);
     change = -1;
+
+    z = 0;
   }
 }
 
