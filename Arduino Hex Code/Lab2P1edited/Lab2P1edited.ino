@@ -38,8 +38,8 @@ void loop() {
   }
   else if((PINB&0x02)==0){
     while((PINB&0x02)==0);
-    if(B > 98)
-      B=0.0;
+    if(B > 9.8)
+      B=9.9;
     else
       B += 0.1;
     change = 1;
