@@ -55,7 +55,7 @@ void lcd_text(char text){
   PORTC = PORTC | 0b00010000;   //PC4 = 1 then RS = 1 => Data Mode
   PORTC = PORTC | 0b00100000;   //PC5 = 1 then E = 1  => Start LCD Clock
   PORTD = (PORTD & 0xF0)|buff;
-  delay(5);
+  delay(1);
   PORTC = PORTC & 0b11011111;   //PC5 = 0 then E = 0  => Stop LCD Clock
   delay(1);
 
@@ -63,7 +63,7 @@ void lcd_text(char text){
   PORTC = PORTC | 0b00010000;   //PC4 = 0 then RS = 0 => Command Mode
   PORTC = PORTC | 0b00100000;   //PC5 = 0 then E = 0  => Stop LCD Clock
   PORTD = (PORTD & 0xF0)|buff;
-  delay(5);
+  delay(1);
   PORTC = PORTC & 0b11011111;
   delay(1);
 }
