@@ -9,8 +9,8 @@ int z;
 void setup() {
   DDRC = 0x30;
   DDRD = 0x0F;
-  DDRB = 0xFC;
-  PORTB = PORTB | 0b00000011;
+  //DDRB = 0xFC;
+  //PORTB = PORTB | 0b00000011;
   initial_LCD();
 
   B = 3.42;
@@ -21,6 +21,7 @@ void setup() {
   z = (B-(int)B)*100;
   itoa(z,y,10);
   lcd_puts(y);
+  
 }
 
 void loop() {
@@ -68,14 +69,18 @@ void lcd_text(char text){
 void initial_LCD(){
   delay(100);
   lcd_command(0x33);  delay(15);
-  lcd_command(0x32);  delay(1);
+  lcd_command(0x33);  delay(1);
+  lcd_command(0x33);  delay(1);
+  lcd_command(0x22);  delay(1);
   lcd_command(0x28);  delay(1);
 
-  lcd_command(0x0c);
+  lcd_command(0x0F);
   delay(1);
   lcd_command(0x01);
   delay(1);
   lcd_command(0x06);
+  delay(1);
+  lcd_command(0x80);
   delay(1);
 }
 
