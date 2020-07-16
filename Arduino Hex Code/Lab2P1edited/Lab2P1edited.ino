@@ -5,6 +5,7 @@ void lcd_puts(char *ch);
 char y[10];
 double B;
 int z;
+int change = -1;
 
 void setup() {
   DDRC = 0x30;  //0011 0000 
@@ -15,6 +16,7 @@ void setup() {
 
   
   B = 3.42;
+  /*
   lcd_command(0x80);
   lcd_puts("B =: ");
   itoa((int)B,y,10);
@@ -22,11 +24,11 @@ void setup() {
   z = (B-(int)B)*10;
   itoa(z,y,10);
   lcd_puts(y);
+  */
   
   
 }
 
-int change = -1;
 void loop() {
   
   if((PINB&0x01)==0){
@@ -54,8 +56,6 @@ void loop() {
     dtostrf(B,1,2,y);
     lcd_puts(y);
     change = -1;
-
-    z = 0;
   }
 }
 
