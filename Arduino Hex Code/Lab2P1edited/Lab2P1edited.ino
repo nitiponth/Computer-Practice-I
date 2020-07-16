@@ -38,23 +38,30 @@ void loop() {
   }
   else if((PINB&0x02)==0){
     while((PINB&0x02)==0);
-    B += 0.1;
+    if(B > 98)
+      B=0.0;
+    else
+      B += 0.1;
     change = 1;
   }
 
   if(change = 1){
     lcd_command(0x80);
     lcd_puts("B =: ");
-    /*itoa((int)B,y,10);
+    
+    itoa((int)B,y,10);
     lcd_puts(y); lcd_text('.');
     z = (B-(int)B)*100;
     if(z < 10)
-      lcd_puts('0');
+      lcd_puts("0");
     itoa(z,y,10);
     lcd_puts(y);
-    */
+
+    lcd_command(0xC0);
+    lcd_puts("B =: ");
     dtostrf(B,1,2,y);
     lcd_puts(y);
+    
     change = -1;
   }
 }
