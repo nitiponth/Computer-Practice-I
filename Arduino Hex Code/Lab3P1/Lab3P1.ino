@@ -39,6 +39,7 @@ void loop() {
   lcd_puts(y); lcd_text('.');
   z = (B-(int)B)*100;
   itoa(z,y,10); lcd_puts(y);
+  delay(1000);
   
   adc_value = myADC(1);
   B = adc_value*5.0/1024;
@@ -47,6 +48,8 @@ void loop() {
   lcd_puts(y); lcd_text('.');
   z = (B-(int)B)*100;
   itoa(z,y,10); lcd_puts(y);
+
+  delay(1000);
   
 }
 
