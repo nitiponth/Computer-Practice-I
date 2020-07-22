@@ -23,8 +23,8 @@ int myADC(char ch){
     ADMUX = ch;
     ADMUX |= 0x40;
     ADMUX &= 0xDF;
-    ADMUX |= 0x07;
-    ADMUX |= 0xC0;
+    ADCSRA |= 0x07;
+    ADCSRA |= 0xC0;
 
     while(ADCSRA & 0x40);
     ADCval = ADCW;

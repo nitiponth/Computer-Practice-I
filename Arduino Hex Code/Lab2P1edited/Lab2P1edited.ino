@@ -3,7 +3,7 @@ void lcd_command(char cmd);
 void lcd_text(char text);
 void lcd_puts(char *ch);
 char y[10];
-double B;
+float B;
 int z;
 int change = -1;
 
@@ -14,19 +14,11 @@ void setup() {
   PORTB = PORTB | 0b00000011;
   initial_LCD();
 
-  
-  B = 3.42;
-  /*
-  lcd_command(0x80);
-  lcd_puts("B =: ");
-  itoa((int)B,y,10);
-  lcd_puts(y); lcd_text('.');
-  z = (B-(int)B)*10;
-  itoa(z,y,10);
-  lcd_puts(y);
-  */
-  
-  
+
+  B = 3.1;
+  change = 1;
+
+
 }
 
 void loop() {
@@ -48,20 +40,20 @@ void loop() {
   if(change = 1){
     lcd_command(0x80);
     lcd_puts("B =: ");
-    
     itoa((int)B,y,10);
     lcd_puts(y); lcd_text('.');
-    z = (B-(int)B)*100;
+    z = 100*B - ((int)B *100); //(B-(int)B)*100;
     if(z < 10)
       lcd_puts("0");
     itoa(z,y,10);
     lcd_puts(y);
+    
 
     lcd_command(0xC0);
     lcd_puts("B =: ");
     dtostrf(B,1,2,y);
     lcd_puts(y);
-    
+
     change = -1;
   }
 }
@@ -109,7 +101,7 @@ void initial_LCD(){
   lcd_command(0x33);  delay(15);
   lcd_command(0x32);  delay(1);
   lcd_command(0x28);  delay(1);
-  
+
   lcd_command(0x0C);
   delay(1);
   lcd_command(0x01);
