@@ -4,10 +4,7 @@ void lcd_command(char cmd);
 void lcd_text(char text);
 void lcd_puts(char *ch);
 char y[10];
-double B;
-int z;
 int adc_value;
-double res = 10000;
 double rTh = -1 , temp = -1;
 
 
@@ -33,6 +30,8 @@ int myADC(char ch){
     return ADCval;
 }
 
+char unit[10];
+int change = -1;
 void loop() {
   if((PINB&0x01)==0){
     while((PINB&0x01)==0);
@@ -43,13 +42,12 @@ void loop() {
   
     temp = 1.0/((1.0/3435.0)*log(rTh/10000.0)+(1.0/298.15));
     temp = temp - 273.15;
+    
     lcd_command(0x01);
-    lcd_command(0x80);
-    dtostrf(temp,4,2,y);
-    lcd_puts("Temperature ");
     lcd_command(0xC0);
-    lcd_puts(y);
-    lcd_puts(" celsius");
+    lcd_puts(" Celsius");
+    
+    change = 1;
   }
 
   else if((PINB&0x02)==0){
@@ -62,14 +60,23 @@ void loop() {
     temp = 1.0/((1.0/3435.0)*log(rTh/10000.0)+(1.0/298.15));
     temp = temp - 273.15;
     temp = temp * (9.0/5.0) + 32.0;
+
     lcd_command(0x01);
+    lcd_command(0xC0);
+    lcd_puts(" F");
+    
+    change = 1;
+    
+  }
+
+  if(change == 1){   
+    
     lcd_command(0x80);
     dtostrf(temp,4,2,y);
     lcd_puts("Temperature ");
-    lcd_command(0xC0);
     lcd_puts(y);
-    lcd_puts(" F");
-    
+    lcd_puts(unit);
+    change = -1;
   }
 }
 
