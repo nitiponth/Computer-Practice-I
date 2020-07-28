@@ -43,12 +43,33 @@ void loop() {
   
     temp = 1.0/((1.0/3435.0)*log(rTh/10000.0)+(1.0/298.15));
     temp = temp - 273.15;
+    lcd_command(0x01);
     lcd_command(0x80);
     dtostrf(temp,4,2,y);
     lcd_puts("Temperature ");
     lcd_command(0xC0);
     lcd_puts(y);
     lcd_puts(" celsius");
+  }
+
+  else if((PINB&0x02)==0){
+    while((PINB&0x02)==0);
+
+    adc_value = myADC(0);
+    double Vo = ((double)adc_value)*(5.0/1024.0);
+    rTh = ((5.0 * 10000.0)/Vo)  - 10000.0;
+  
+    temp = 1.0/((1.0/3435.0)*log(rTh/10000.0)+(1.0/298.15));
+    temp = temp - 273.15;
+    temp = temp * (9.0/5.0) + 32.0;
+    lcd_command(0x01);
+    lcd_command(0x80);
+    dtostrf(temp,4,2,y);
+    lcd_puts("Temperature ");
+    lcd_command(0xC0);
+    lcd_puts(y);
+    lcd_puts(" F");
+    
   }
 }
 
