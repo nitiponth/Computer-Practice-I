@@ -47,7 +47,7 @@ void loop() {
     lcd_puts("                 ");
     lcd_command(0xC0);
     lcd_puts(y);
-    lcd_puts(" celsius");
+    lcd_puts(" Celsius");
   }
 
   else if((PINB&0x02)==0){
