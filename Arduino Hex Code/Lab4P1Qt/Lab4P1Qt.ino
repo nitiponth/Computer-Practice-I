@@ -17,12 +17,30 @@ void setup() {
 }
 
 void loop() {
+  PORTB = singlePhase[0];
+  delay(10);
+  
   if((PIND&0x04)==0){
     while((PIND&0x04)==0);
-    PORTB = singlePhase[0];
-    delay(10);
-    while(qt != 1){
-      for(int j=0;j<128;j++){     // 1degree = 1.42778 j   90 = 128.5j  180 = 257j 360 = 514j
+    while(qt != 1)
+      rotate();
+  }
+  if((PIND&0x08)==0){
+    while((PIND&0x08)==0);
+    while(qt != 2)
+      rotate();
+  }
+  if((PIND&0x10)==0){
+    while((PIND&0x10)==0);
+    while(qt != 0)
+      rotate();
+  }
+  PORTB = 0x00;
+  
+}
+
+void rotate(){
+  for(int j=0;j<128;j++){     // 1degree = 1.42778 j   90 = 128.5j  180 = 257j 360 = 514j
         for(int i=0;i<4;i++){
           PORTB = singlePhase[i];
           delay(5);
@@ -32,41 +50,4 @@ void loop() {
       if(qt > 3)
         qt=0;
       Serial.print(qt);
-    }
-    PORTB = 0x00;
-  }
-  if((PIND&0x08)==0){
-    while((PIND&0x08)==0);
-    while(qt != 2){
-      for(int j=0;j<128;j++){     // 1degree = 1.42778 j   90 = 128.5j  180 = 257j 360 = 514j
-        for(int i=0;i<4;i++){
-          PORTB = singlePhase[i];
-          delay(5);
-        }
-      }
-      qt++;
-      if(qt > 3)
-        qt=0;
-       Serial.print(qt);
-    }
-    PORTB = 0x00;
-  }
-  if((PIND&0x10)==0){
-    while((PIND&0x10)==0);
-    while(qt != 0){
-      for(int j=0;j<128;j++){     // 1degree = 1.42778 j   90 = 128.5j  180 = 257j 360 = 514j
-        for(int i=0;i<4;i++){
-          PORTB = singlePhase[i];
-          delay(5);
-        }
-      }
-      qt++;
-      if(qt > 3)
-        qt=0;
-
-       Serial.print(qt);
-    }
-    PORTB = 0x00;
-  }
-  
 }
