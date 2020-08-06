@@ -20,12 +20,12 @@ void loop() {
     while(qt != 1)
       rotate();
   }
-  if((PIND&0x08)==0){
+  else if((PIND&0x08)==0){
     while((PIND&0x08)==0);
     while(qt != 2)
       rotate();
   }
-  if((PIND&0x10)==0){
+  else if((PIND&0x10)==0){
     while((PIND&0x10)==0);
     while(qt != 0)
       rotate();
@@ -41,6 +41,7 @@ void rotate(){
         }
       }
       qt++;
+      
       if(qt > 3)
         qt=0;
       Serial.print(qt);
