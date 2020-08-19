@@ -14,7 +14,7 @@ int degree = 0;
 int rotate = 0;
 int j = 0;
 void loop() {
-  if (Serial.available() < 2 && Serial.available() > 0) {
+  if (Serial.available()>0) {
     delay(100);
     input = Serial.readString();
     input.trim();
@@ -36,6 +36,7 @@ void loop() {
       x[1] = input.charAt(1);
       input.remove(0, 2);
       rotate = input.toInt();
+
 
       if (x[0] == 'f' && x[1] == 'w') { //need single quote
         forward();
@@ -66,6 +67,7 @@ void forward() {
       Serial.print("Motor point to ");
       Serial.print(newDG);
       Serial.println(" degree");
+      //Serial.println(4*j);
     }
   }
 }
