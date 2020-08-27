@@ -9,6 +9,7 @@ double rTh = -1  , temp = -1;
 
 
 void setup() {
+  Serial.begin(9600);
   DDRC = 0x30;  //0011 0000 
   DDRD = 0x0F;
   DDRB = 0xFC;
@@ -38,6 +39,9 @@ void loop() {
   
    temp = 1.0/((1.0/3435.0)*log(rTh/10000.0)+(1.0/298.15));
    temp = temp - 273.15;
+
+   Serial.println(temp);
+   
   
   if((PINB&0x01)==0){
     while((PINB&0x01)==0); 
