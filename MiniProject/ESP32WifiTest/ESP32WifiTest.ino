@@ -14,7 +14,7 @@ void setup(){
   
   Initialization();
   WiFiConnection();
-  if(Firebase.setInt(firebaseData,"/logCount",1));
+  //if(Firebase.setInt(firebaseData,"/logCount",1));
  }
 
 void Initialization(){
@@ -38,26 +38,50 @@ void WiFiConnection(){
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
   Firebase.reconnectWiFi(true);
 }
+
+
 int logCount = -1;
 int counter = 1;
-void loop(){
 
-  delay(5000);
-  
+void loop(){
+  if (Firebase.setTimestamp(firebaseData,"/serverTime")){
+      std::time_t result = firebaseData.intData() + 25200;
+      String date = asctime(std::localtime(&result));
+      date.trim();
+      String year = date.substring(20,24);
+      String month = "/" + date.substring(4,7);
+      String day = "/" + date.substring(8,10);
+      String hour = "/" + date.substring(11,13);
+      String min = "/" + date.substring(14,16);
+      int minInt = min.substring(1,4).toInt();
+      //Serial.println(min);
+      //Serial.println(minInt);
+      //Serial.println(date);
+      if(minInt%10 == 0){
+        if (Firebase.setString(firebaseData,year + month + day + hour + min + "/date",date)){
+          Serial.println("SUCCESS to add DATE to database : \n" + date);
+        }
+        else{
+          Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+        }
+      }
+  }
+
+  delay(10000);
+  /****
   if(Firebase.getInt(firebaseData,"/logCount")){
       Serial.print("log folder number :");
       logCount = firebaseData.intData();
       Serial.println(firebaseData.intData());
       //Firebase.setInt(firebaseData,"/logCount",logCount++);
     }
-  
+  /* dB path setting here 
   String path = "logNo" + String(logCount);
+  
   if(Firebase.setInt(firebaseData, path + "/Count",counter++)){
       //Serial.println("Count value is Set ");
     }
   if (Firebase.setTimestamp(firebaseData,path + "/Timestamp")){
-      //Serial.println("TIMESTAMP is Set ");
-      //Serial.println(firebaseData.intData());
       std::time_t result = firebaseData.intData() + 25200;
       String date = asctime(std::localtime(&result));
       date.trim();
@@ -91,7 +115,7 @@ void loop(){
   if(Firebase.setInt(firebaseData,"/logCount",++logCount));
 
   Serial.println("\n\n ==================================================== \n\n");
-  
+  */
 }
 
 void printLocalTime(){
