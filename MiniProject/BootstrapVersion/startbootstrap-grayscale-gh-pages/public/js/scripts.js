@@ -3,14 +3,14 @@
     * Copyright 2013-2020 Start Bootstrap
     * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-grayscale/blob/master/LICENSE)
     */
-    (function ($) {
+(function ($) {
     "use strict"; // Start of use strict
 
     // Smooth scrolling using jQuery easing
     $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
         if (
             location.pathname.replace(/^\//, "") ==
-                this.pathname.replace(/^\//, "") &&
+            this.pathname.replace(/^\//, "") &&
             location.hostname == this.hostname
         ) {
             var target = $(this.hash);
@@ -61,27 +61,27 @@ const webClickRef = database.ref("webClick");
 
 
 var pumpSystem = new Vue({
-    el:"#pumpSystem",
-    data:{
-        status:'',
-        stat:[],
+    el: "#pumpSystem",
+    data: {
+        status: '',
+        stat: [],
     },
-    methods:{
-        updateStatus:function(){
-            dbStatusRef.child("pump").update({pumpStatus:!this.status})
-            webClickRef.child("clicked").update({webClick:true})
+    methods: {
+        updateStatus: function () {
+            dbStatusRef.child("pump").update({ pumpStatus: !this.status })
+            webClickRef.child("clicked").update({ webClick: true })
         }
 
     },
-    created(){
-        dbStatusRef.on('child_added',snapshot=>{
+    created() {
+        dbStatusRef.on('child_added', snapshot => {
             this.stat.push(snapshot.val())
             console.log(snapshot.val())
-            this.status = this.stat[(this.stat.length)-1].pumpStatus;
-            
+            this.status = this.stat[(this.stat.length) - 1].pumpStatus;
+
         })
-        dbStatusRef.on('child_changed',snapshot=>{
-            const updateStatus="pump"
+        dbStatusRef.on('child_changed', snapshot => {
+            const updateStatus = "pump"
             updateStatus.pumpStatus = snapshot.val().pumpStatus
             this.status = snapshot.val().pumpStatus
             console.log(snapshot.val())
@@ -90,26 +90,31 @@ var pumpSystem = new Vue({
 
 });
 
-var dbDate = "Log/2020/Oct/10/19";
+var dbDate = "newLog/";
 const dbLogRef = database.ref(dbDate);
 var logSystem = new Vue({
-    el:"#logSystem",
-    data:{
-        log:[],
-        count:0
+    el: "#logSystem",
+    data: {
+        log: [],
+        count: 0
     },
-    created(){
-        dbLogRef.on('child_added',snapshot=>{
-            if(snapshot.val().updateFinish){
+    filters: {
+        reverse: function (array) {
+            return array.slice().reverse()
+        }
+    },
+    created() {
+        dbLogRef.on('child_added', snapshot => {
+            if (snapshot.val().updateFinish) {
                 this.log.push(snapshot.val())
                 console.log(snapshot.val())
             }
         })
-        dbLogRef.on('child_changed',snapshot=>{
-            if(snapshot.val().updateFinish){
+        dbLogRef.on('child_changed', snapshot => {
+            if (snapshot.val().updateFinish) {
                 this.log.push(snapshot.val())
                 console.log(snapshot.val())
             }
         })
-    }
+    },
 });

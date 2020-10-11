@@ -108,11 +108,11 @@
     <section class="projects-section bg-light" id="logs">
         <div class="container" id="logSystem">
             <!--<div v-for="logs in log">-->
-            <div v-for="i in log">
+            <div v-for="i in log.slice(log.length-10,log.length).reverse()">
                 <br>
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">{{i.date}}</h5>
+                        <h5 class="card-title">Log ID : {{i.id}} | {{i.date}}</h5>
                         <br>
                         <p class="card-text">Soil moisture : {{i.SoilMoisture}}
                             , Water pump statue : {{i.pumpStatus}}

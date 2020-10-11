@@ -42,7 +42,6 @@ void WiFiConnection() {
 }
 
 
-int logCount = -1;
 int counter = 1;
 float tempC = 0.0;
 String path = "";
@@ -58,20 +57,14 @@ void loop() {
     pumpSwitch(false);
     }
   */
-
   webClick();
 
   if (Firebase.setTimestamp(firebaseData, "/serverTime")) {
     std::time_t result = firebaseData.intData() + 25200;
     String date = asctime(std::localtime(&result));
     date.trim();
-    year = "Log/" + date.substring(20, 24);
-    month = "/" + date.substring(4, 7);
-    day = "/" + date.substring(8, 10);
-    hour = "/" + date.substring(11, 13);
-    minute = "/" + date.substring(14, 16);
-    int minuteInt = minute.substring(1, 4).toInt();
-    int hourInt = hour.substring(1, 4).toInt();
+    int hourInt = date.substring(11, 13).toInt();
+    int minuteInt = date.substring(14, 16).toInt();
 
 
     if (minuteInt % 30 == 0) {
@@ -83,12 +76,11 @@ void loop() {
           Serial.println("Turn ON water pump");
         else
           Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
-        
+
         if (Firebase.setString(firebaseData, path + "/date", date))
           Serial.println("SUCCESS to add DATE to database : \n" + date);
         else
           Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
-
       }
       else if ((hourInt == 10 && minuteInt == 0) || (hourInt == 16 && minuteInt == 0)) {
         if (value < 50) {             //watering for 1 hour but soil moisture still low
@@ -123,21 +115,38 @@ void loop() {
       }
       addPumpStatus();
       updateLog();
+      delay(60000);
     }
   }
 }
 
-String getLog(){
+String getLog() {
+  int logCount;
+  String logPath;
   if (Firebase.getInt(firebaseData, "/LogKeep/logCount")) {
-    int logCount = firebaseData.intData() + 1;
-    String logPath = String(logCount);
+    logCount = firebaseData.intData() + 1;
+    logPath = String(logCount);
   }
+  else {
+    Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+  }
+  if (Firebase.setInt(firebaseData, "/LogKeep/logCount",logCount)) {
+    Serial.println("Now Log :" + logCount);
+  }
+  else {
+    Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+  }
+  
+  if (Firebase.setInt(firebaseData, "/newLog/"+logPath + "/id",logCount)) {
+    Serial.println("Log id :" + logPath + "\n\n");
+  }
+  return logPath;
 }
 
 void addPumpStatus() {
   if (Firebase.getBool(firebaseData, "/waterControl/pump/pumpStatus")) {
     boolean pStatus = firebaseData.boolData();
-    if (Firebase.setFloat(firebaseData, year + month + day + hour + minute + "/pumpStatus", pStatus)) {
+    if (Firebase.setFloat(firebaseData, path + "/pumpStatus", pStatus)) {
       Serial.print("SUCCESS to add statusLog to database : ");
       Serial.println(pStatus);
     }
@@ -151,16 +160,19 @@ void addPumpStatus() {
 }
 
 void webClick() {
+  
   if (Firebase.getBool(firebaseData, "/webClick/clicked/webClick")) {
     boolean clickStatus = firebaseData.boolData();
     if (clickStatus) {
+      path =  "newLog/" + getLog();
+      Serial.println("\n\n" + path + "\n\n");
       addDate();
       addPumpStatus();
       readSoilMoisture();
       if (Firebase.getBool(firebaseData, "/waterControl/pump/pumpStatus")) {
         boolean pStatus = firebaseData.boolData();
         pumpSwitch(pStatus);
-        if (Firebase.setString(firebaseData, year + month + day + hour + minute + "/ControlBy", "Web Click")) {
+        if (Firebase.setString(firebaseData, path + "/ControlBy", "Web Click")) {
           Serial.println("Web click aleart!!");
         }
         if (Firebase.setBool(firebaseData, "/webClick/clicked/webClick", !clickStatus)) {
@@ -181,7 +193,7 @@ void webClick() {
 }
 
 void updateLog() {
-  if (Firebase.setBool(firebaseData, year + month + day + hour + minute + "/updateFinish", true)) {}
+  if (Firebase.setBool(firebaseData, path + "/updateFinish", true)) {}
   else
     Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
 }
@@ -197,7 +209,7 @@ void addDate() {
     hour = "/" + date.substring(11, 13);
     minute = "/" + date.substring(14, 16);
 
-    if (Firebase.setString(firebaseData, year + month + day + hour + minute + "/date", date))
+    if (Firebase.setString(firebaseData, path + "/date", date))
       Serial.println("SUCCESS to add DATE to database : \n" + date);
     else
       Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
