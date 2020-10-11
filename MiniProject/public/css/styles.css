@@ -10406,11 +10406,11 @@ body {
 }
 
 input:checked + .slider {
-  background-color: #e83e8c;
+  background-color: #ffc107;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #e83e8c;
+  box-shadow: 0 0 1px #ffc107;
 }
 
 input:checked + .slider:before {

@@ -21,30 +21,32 @@
 </head>
 
 <body id="page-top">
+
     <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-analytics.js"></script>
 
     <script>
         // Your web app's Firebase configuration
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         var firebaseConfig = {
-            apiKey: "AIzaSyBJC7kZhr7MfcAG_HRIn2TdQPAVgkqaqT0",
-            authDomain: "esp32test-9f958.firebaseapp.com",
-            databaseURL: "https://esp32test-9f958.firebaseio.com",
-            projectId: "esp32test-9f958",
-            storageBucket: "esp32test-9f958.appspot.com",
-            messagingSenderId: "711157977223",
-            appId: "1:711157977223:web:58aa4f74dd9b76ac09a822",
-            measurementId: "G-PCFWHQN1FQ"
+            apiKey: "AIzaSyAzmUbDS7D18VsUDMk4xLmymQXpZX8mWyo",
+            authDomain: "smartgarden-5edd9.firebaseapp.com",
+            databaseURL: "https://smartgarden-5edd9.firebaseio.com",
+            projectId: "smartgarden-5edd9",
+            storageBucket: "smartgarden-5edd9.appspot.com",
+            messagingSenderId: "602137197226",
+            appId: "1:602137197226:web:78fa981eb0c6b084712ed3",
+            measurementId: "G-T6ZZDE9KT2"
         };
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
     </script>
+
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
         <div class="container">
@@ -107,18 +109,19 @@
     <section class="projects-section bg-light" id="logs">
         <div class="container" id="logSystem">
             <!--<div v-for="logs in log">-->
-                <div v-for="i in log">
-                    <br>
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{i.date}}</h5>
-                            <br>
-                            <p class="card-text">Soil moisture : {{i.SoilMoisture}} 
-                                , Water pump statue : {{i.pumpStatus}}
-                                <div v-if="i.ControlBy!=null">Control By : {{i.ControlBy}}</div></p>
-                        </div>
+            <div v-for="i in log">
+                <br>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{i.date}}</h5>
+                        <br>
+                        <p class="card-text">Soil moisture : {{i.SoilMoisture}}
+                            , Water pump statue : {{i.pumpStatus}}
+                        <div v-if="i.ControlBy!=null">Control By : {{i.ControlBy}}</div>
+                        </p>
                     </div>
                 </div>
+            </div>
             <!--</div>-->
         </div>
     </section>

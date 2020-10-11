@@ -56,7 +56,9 @@
 })(jQuery); // End of use strict
 
 var database = firebase.database();
-const dbRef = database.ref("waterControl");
+const dbStatusRef = database.ref("waterControl");
+const webClickRef = database.ref("webClick");
+
 
 var pumpSystem = new Vue({
     el:"#pumpSystem",
@@ -66,18 +68,19 @@ var pumpSystem = new Vue({
     },
     methods:{
         updateStatus:function(){
-            dbRef.child("pump").update({pumpStatus:!this.status})
+            dbStatusRef.child("pump").update({pumpStatus:!this.status})
+            webClickRef.child("clicked").update({webClick:true})
         }
 
     },
     created(){
-        dbRef.on('child_added',snapshot=>{
+        dbStatusRef.on('child_added',snapshot=>{
             this.stat.push(snapshot.val())
             console.log(snapshot.val())
             this.status = this.stat[(this.stat.length)-1].pumpStatus;
             
         })
-        dbRef.on('child_changed',snapshot=>{
+        dbStatusRef.on('child_changed',snapshot=>{
             const updateStatus="pump"
             updateStatus.pumpStatus = snapshot.val().pumpStatus
             this.status = snapshot.val().pumpStatus
@@ -85,4 +88,20 @@ var pumpSystem = new Vue({
         })
     }
 
+});
+
+var dbDate = "Log/2020/Oct/10/18";
+const dbLogRef = database.ref(dbDate);
+var logSystem = new Vue({
+    el:"#logSystem",
+    data:{
+        log:[]
+    },
+    created(){
+        dbLogRef.on('child_added',snapshot=>{
+            this.log.push(snapshot.val())
+            console.log(snapshot.val())
+            //console.log(this.log.date)
+        })
+    }
 });

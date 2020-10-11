@@ -45,6 +45,7 @@ void WiFiConnection() {
 int logCount = -1;
 int counter = 1;
 float tempC = 0.0;
+String path = "";
 
 void loop() {
   /*
@@ -72,20 +73,18 @@ void loop() {
     int minuteInt = minute.substring(1, 4).toInt();
     int hourInt = hour.substring(1, 4).toInt();
 
-    //sensors.requestTemperatures();
-    //tempC = sensors.getTempCByIndex(0);
-    //Serial.println(tempC);
 
     if (minuteInt % 30 == 0) {
+      path =  "newLog/" + getLog();
       int value = readSoilMoisture();
       if ((hourInt == 9 && minuteInt == 0) || (hourInt == 15 && minuteInt == 0) && value < 40) {    //Turn on water pump
         pumpSwitch(true);
-        if (Firebase.setString(firebaseData, year + month + day + hour + minute + "/ControlBy", "Automation"))
+        if (Firebase.setString(firebaseData, path + "/ControlBy", "Automation"))
           Serial.println("Turn ON water pump");
         else
           Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
-
-        if (Firebase.setString(firebaseData, year + month + day + hour + minute + "/date", date))
+        
+        if (Firebase.setString(firebaseData, path + "/date", date))
           Serial.println("SUCCESS to add DATE to database : \n" + date);
         else
           Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
@@ -94,19 +93,19 @@ void loop() {
       else if ((hourInt == 10 && minuteInt == 0) || (hourInt == 16 && minuteInt == 0)) {
         if (value < 50) {             //watering for 1 hour but soil moisture still low
           Serial.println("Something wrong with Water system please check!!!");
-          if (Firebase.setString(firebaseData, year + month + day + hour + minute + "/ControlBy", "Automation"))
+          if (Firebase.setString(firebaseData, path + "/ControlBy", "Automation"))
             Serial.println("watering System ERROR!!");
           pumpSwitch(false);
         }
         else {
           pumpSwitch(false);          //watering for 1 hour
-          if (Firebase.setString(firebaseData, year + month + day + hour + minute + "/ControlBy", "Automation")) {
+          if (Firebase.setString(firebaseData, path + "/ControlBy", "Automation")) {
             Serial.println("Turn OFF water pump");
           }
           else
             Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
 
-          if (Firebase.setString(firebaseData, year + month + day + hour + minute + "/date", date))
+          if (Firebase.setString(firebaseData, path + "/date", date))
             Serial.println("SUCCESS to add DATE to database : \n" + date);
           else
             Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
@@ -115,7 +114,7 @@ void loop() {
         updateLog();
       }
       else {        //keep log to database without pump control
-        if (Firebase.setString(firebaseData, year + month + day + hour + minute + "/date", date)) {
+        if (Firebase.setString(firebaseData, path + "/date", date)) {
           Serial.println("SUCCESS to add DATE to database : \n" + date);
         }
         else {
@@ -125,6 +124,13 @@ void loop() {
       addPumpStatus();
       updateLog();
     }
+  }
+}
+
+String getLog(){
+  if (Firebase.getInt(firebaseData, "/LogKeep/logCount")) {
+    int logCount = firebaseData.intData() + 1;
+    String logPath = String(logCount);
   }
 }
 
@@ -219,7 +225,7 @@ int readSoilMoisture() {
   Serial.print("Percent Value : ");
   Serial.println(value);
 
-  if (Firebase.setFloat(firebaseData, year + month + day + hour + minute + "/SoilMoisture", value)) {
+  if (Firebase.setFloat(firebaseData, path + "/SoilMoisture", value)) {
     Serial.print("SUCCESS to add Soil Moisture to database : ");
     Serial.println(value);
   }
