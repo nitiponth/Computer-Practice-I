@@ -64,12 +64,21 @@ var pumpSystem = new Vue({
     el: "#pumpSystem",
     data: {
         status: '',
+        initTime:'',
+        finTime:'',
         stat: [],
     },
     methods: {
         updateStatus: function () {
             dbStatusRef.child("pump").update({ pumpStatus: !this.status })
             webClickRef.child("clicked").update({ webClick: true })
+        },
+        updateTime: function(){
+            dbStatusRef.child("time").update({initialTime: parseInt(this.initTime)})
+            dbStatusRef.child("time").update({finalTime: parseInt(this.finTime)})
+            this.initTime = ''
+            this.finTime = ''
+            alert("Set Auto watering time");
         }
 
     },
@@ -92,6 +101,7 @@ var pumpSystem = new Vue({
 
 var dbDate = "newLog/";
 const dbLogRef = database.ref(dbDate);
+
 var logSystem = new Vue({
     el: "#logSystem",
     data: {

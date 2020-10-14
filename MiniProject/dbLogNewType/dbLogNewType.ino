@@ -70,7 +70,9 @@ void loop() {
     if (minuteInt % 30 == 0) {
       path =  "newLog/" + getLog();
       int value = readSoilMoisture();
-      if ((hourInt == 9 && minuteInt == 0) || (hourInt == 15 && minuteInt == 0) && value < 40) {    //Turn on water pump
+      int startTime = getInitialTimeSet();
+      int stopTime =  getFinalTimeSet();
+      if ((hourInt == startTime) && (minuteInt == 0) && value < 40) {    //Turn on water pump
         pumpSwitch(true);
         if (Firebase.setString(firebaseData, path + "/ControlBy", "Automation"))
           Serial.println("Turn ON water pump");
@@ -82,9 +84,9 @@ void loop() {
         else
           Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
       }
-      else if ((hourInt == 10 && minuteInt == 0) || (hourInt == 16 && minuteInt == 0)) {
+      else if ((hourInt == stopTime && minuteInt == 0)) {
         if (value < 50) {             //watering for 1 hour but soil moisture still low
-          Serial.println("Something wrong with Water system please check!!!");
+          Serial.println("Something wrong with Water system please check!!! \n\n\n");
           if (Firebase.setString(firebaseData, path + "/ControlBy", "Automation"))
             Serial.println("watering System ERROR!!");
           pumpSwitch(false);
@@ -130,14 +132,14 @@ String getLog() {
   else {
     Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
   }
-  if (Firebase.setInt(firebaseData, "/LogKeep/logCount",logCount)) {
+  if (Firebase.setInt(firebaseData, "/LogKeep/logCount", logCount)) {
     Serial.println("Now Log :" + logCount);
   }
   else {
     Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
   }
-  
-  if (Firebase.setInt(firebaseData, "/newLog/"+logPath + "/id",logCount)) {
+
+  if (Firebase.setInt(firebaseData, "/newLog/" + logPath + "/id", logCount)) {
     Serial.println("Log id :" + logPath + "\n\n");
   }
   return logPath;
@@ -160,7 +162,7 @@ void addPumpStatus() {
 }
 
 void webClick() {
-  
+
   if (Firebase.getBool(firebaseData, "/webClick/clicked/webClick")) {
     boolean clickStatus = firebaseData.boolData();
     if (clickStatus) {
@@ -173,7 +175,7 @@ void webClick() {
         boolean pStatus = firebaseData.boolData();
         pumpSwitch(pStatus);
         if (Firebase.setString(firebaseData, path + "/ControlBy", "Web Click")) {
-          Serial.println("Web click aleart!!");
+          Serial.println("Web click aleart!! \n\n");
         }
         if (Firebase.setBool(firebaseData, "/webClick/clicked/webClick", !clickStatus)) {
           updateLog();
@@ -192,58 +194,109 @@ void webClick() {
   }
 }
 
-void updateLog() {
-  if (Firebase.setBool(firebaseData, path + "/updateFinish", true)) {}
-  else
-    Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
-}
+void manualSwitch() {
+    path =  "newLog/" + getLog();
+    Serial.println("\n\n" + path + "\n\n");
+    addDate();
+    addPumpStatus();
+    readSoilMoisture();
+    if (Firebase.getBool(firebaseData, "/waterControl/pump/pumpStatus")) {
+      boolean pStatus = firebaseData.boolData();
+      pumpSwitch(pStatus);
+      if (Firebase.setString(firebaseData, path + "/ControlBy", "ManualSwitch")) {
+        Serial.println("Web click aleart!! \n\n");
+      }
+      if (Firebase.setBool(firebaseData, "/webClick/clicked/webClick", !clickStatus)) {
+        updateLog();
+      }
+      else {
+        Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+      }
+    }
+    else {
+      Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+    }
+  }
 
-void addDate() {
-  if (Firebase.setTimestamp(firebaseData, "/serverTime")) {
-    std::time_t result = firebaseData.intData() + 25200;
-    String date = asctime(std::localtime(&result));
-    date.trim();
-    year = "Log/" + date.substring(20, 24);
-    month = "/" + date.substring(4, 7);
-    day = "/" + date.substring(8, 10);
-    hour = "/" + date.substring(11, 13);
-    minute = "/" + date.substring(14, 16);
-
-    if (Firebase.setString(firebaseData, path + "/date", date))
-      Serial.println("SUCCESS to add DATE to database : \n" + date);
+  void updateLog() {
+    if (Firebase.setBool(firebaseData, path + "/updateFinish", true)) {}
     else
       Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
   }
-}
 
-void pumpSwitch(boolean con) {
-  if (Firebase.setBool(firebaseData, "/waterControl/pump/pumpStatus", con)) {
-    Serial.print("SUCCESS to manage water pump : ");
-    if (con)
-      Serial.println("ON");
-    else
-      Serial.println("OFF");
+  void addDate() {
+    if (Firebase.setTimestamp(firebaseData, "/serverTime")) {
+      std::time_t result = firebaseData.intData() + 25200;
+      String date = asctime(std::localtime(&result));
+      date.trim();
+      year = "Log/" + date.substring(20, 24);
+      month = "/" + date.substring(4, 7);
+      day = "/" + date.substring(8, 10);
+      hour = "/" + date.substring(11, 13);
+      minute = "/" + date.substring(14, 16);
+
+      if (Firebase.setString(firebaseData, path + "/date", date))
+        Serial.println("SUCCESS to add DATE to database : \n" + date);
+      else
+        Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+    }
   }
-  else {   //else of set status
-    Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+
+  void pumpSwitch(boolean con) {
+    if (Firebase.setBool(firebaseData, "/waterControl/pump/pumpStatus", con)) {
+      Serial.print("SUCCESS to manage water pump : ");
+      if (con)
+        Serial.println("ON");
+      else
+        Serial.println("OFF");
+    }
+    else {   //else of set status
+      Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+    }
   }
-}
 
-int readSoilMoisture() {
-  int value = analogRead(34);
-  Serial.print("ADC Value : ");
-  Serial.println(value);
-  value = map(value, 4095, 0, 0, 100);
-  Serial.print("Percent Value : ");
-  Serial.println(value);
-
-  if (Firebase.setFloat(firebaseData, path + "/SoilMoisture", value)) {
-    Serial.print("SUCCESS to add Soil Moisture to database : ");
+  int readSoilMoisture() {
+    int value = analogRead(34);
+    Serial.print("ADC Value : ");
     Serial.println(value);
-  }
-  else {
-    Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+    value = map(value, 4095, 0, 0, 100);
+    Serial.print("Percent Value : ");
+    Serial.println(value);
+
+    if (Firebase.setFloat(firebaseData, path + "/SoilMoisture", value)) {
+      Serial.print("SUCCESS to add Soil Moisture to database : ");
+      Serial.println(value);
+    }
+    else {
+      Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+    }
+
+    return value;
   }
 
-  return value;
-}
+  int getInitialTimeSet() {
+    int initTime;
+    if (Firebase.setFloat(firebaseData,  "waterControl/time/initialTime")) {
+      int initTime = firebaseData.intData();
+      Serial.print("Start time : ");
+      Serial.println(initTime);
+    }
+    else {
+      Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+    }
+    return initTime;
+  }
+
+  int getFinalTimeSet() {
+    int finTime;
+    if (Firebase.setFloat(firebaseData,  "waterControl/time/finalTime")) {
+      int initTime = firebaseData.intData();
+      Serial.print("End time : ");
+      Serial.println(finTime);
+      Serial.println("\n");
+    }
+    else {
+      Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+    }
+    return finTime;
+  }

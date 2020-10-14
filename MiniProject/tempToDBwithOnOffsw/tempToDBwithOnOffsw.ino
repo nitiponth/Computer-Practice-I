@@ -78,7 +78,7 @@ void loop() {
 
     if (minuteInt % 30 == 0) {
       int value = readSoilMoisture();
-      if ((hourInt == 9 && minuteInt == 0) || (hourInt == 15 && minuteInt == 0) && value < 40) {    //Turn on water pump
+      if (((hourInt == 9 && minuteInt == 0) || (hourInt == 15 && minuteInt == 0)) && value < 40) {    //Turn on water pump
         pumpSwitch(true);
         if (Firebase.setString(firebaseData, year + month + day + hour + minute + "/ControlBy", "Automation"))
           Serial.println("Turn ON water pump");

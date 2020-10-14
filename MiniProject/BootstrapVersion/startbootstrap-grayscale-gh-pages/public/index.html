@@ -82,8 +82,8 @@
     <!-- About-->
     <section class="about-section" id="pump">
         <center>
-            <div class="container">
-                <div class="row" id="pumpSystem">
+            <div class="container" id="pumpSystem">
+                <div class="row">
                     <div class="col-lg-8 mx-auto">
                         <h2 class="text-white mb-4">Slide the switch to turn on water pump</h2>
                         <br><br><br><br><br><br>
@@ -98,7 +98,24 @@
                                     <span class="slider round"></span>
                                 </div>
                                 <br><br><br><br><br><br>
+                                <br><br><br><br><br><br>
                         </form>
+                    </div>
+                    <div class="col-lg-8 mx-auto">
+                        <h2 class="text-white mb-4">Auto Watering time set</h2>
+                        <div class="row text-white justify-content-center">
+                            <div class="col-sm-1 mx-1">Start</div>
+                            <div class="col-sm-1 mx-1">Stop</div>
+                        </div>
+                        <form class="form-group" @submit.prevent="updateTime">
+                            <div class="row justify-content-center">
+                                <input type="number" min=0 max=23 class="form-control col-sm-1 mx-2" id="initTime" v-model="initTime" placeholder="00" required>
+                                <input type="number" min=0 max=23 class="form-control col-sm-1" id="finTime" v-model="finTime" placeholder="00" required /> 
+                            </div><br>
+                            <button type="submit" class="btn btn-primary col-sm-3 justify-content-center">SetTime</button>
+                        </form>
+
+                        <br><br><br><br><br><br>
                     </div>
                 </div>
             </div>
@@ -108,7 +125,7 @@
     <section class="projects-section bg-light" id="logs">
         <div class="container" id="logSystem">
             <!--<div v-for="logs in log">-->
-            <div v-for="i in log.slice(log.length-10,log.length).reverse()">
+            <div v-for="i in log.slice(log.length-20,log.length).reverse()">
                 <br>
                 <div class="card">
                     <div class="card-body">
