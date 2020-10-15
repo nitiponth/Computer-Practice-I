@@ -57,15 +57,19 @@
 
 var database = firebase.database();
 const dbStatusRef = database.ref("waterControl");
+const dbTimeRef = database.ref("timeControl");
 const webClickRef = database.ref("webClick");
 
 
 var pumpSystem = new Vue({
     el: "#pumpSystem",
     data: {
-        status: '',
-        initTime:'',
-        finTime:'',
+        status: false,
+        initHour:'',
+        finHour:'',
+        initMin:'',
+        finMin:'',
+        test:true,
         stat: [],
     },
     methods: {
@@ -74,26 +78,31 @@ var pumpSystem = new Vue({
             webClickRef.child("clicked").update({ webClick: true })
         },
         updateTime: function(){
-            dbStatusRef.child("time").update({initialTime: parseInt(this.initTime)})
-            dbStatusRef.child("time").update({finalTime: parseInt(this.finTime)})
-            this.initTime = ''
-            this.finTime = ''
+            dbTimeRef.child("time").update({initialHour: parseInt(this.initHour)})
+            dbTimeRef.child("time").update({finalHour: parseInt(this.finHour)})
+            dbTimeRef.child("time").update({initialMin: parseInt(this.initMin)})
+            dbTimeRef.child("time").update({finalMin: parseInt(this.finMin)})
             alert("Set Auto watering time");
         }
 
     },
     created() {
         dbStatusRef.on('child_added', snapshot => {
-            this.stat.push(snapshot.val())
-            console.log(snapshot.val())
-            this.status = this.stat[(this.stat.length) - 1].pumpStatus;
-
+            console.log(snapshot.val().pumpStatus)
+            this.status = snapshot.val().pumpStatus
+            console.log(this.status)
+            
         })
         dbStatusRef.on('child_changed', snapshot => {
-            const updateStatus = "pump"
-            updateStatus.pumpStatus = snapshot.val().pumpStatus
             this.status = snapshot.val().pumpStatus
             console.log(snapshot.val())
+        })
+        dbTimeRef.on('child_added', snapshot => {
+            this.initHour = snapshot.val().initialHour;
+            this.initMin = snapshot.val().initialMin;
+            this.finHour = snapshot.val().finalHour;
+            this.finMin = snapshot.val().finalMin;
+            
         })
     }
 
