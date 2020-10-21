@@ -135,7 +135,8 @@
                         <h5 class="card-title">Log ID : {{i.id}} | {{i.date}}</h5>
                         <br>
                         <p class="card-text">Soil moisture : {{i.SoilMoisture}}
-                            , Water pump statue : {{i.pumpStatus}}
+                            , Water pump statue : {{i.pumpStatus}}<br>
+                            Temperature : {{parseFloat(i.temperature).toFixed(2)}} , Humidity : {{parseFloat(i.humidity).toFixed(2)}}
                         <div v-if="i.ControlBy!=null">Control By : {{i.ControlBy}}</div>
                         </p>
                     </div>
