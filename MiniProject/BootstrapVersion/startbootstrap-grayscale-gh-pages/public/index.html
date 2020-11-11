@@ -62,7 +62,7 @@
                     <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#pump">Water pump switch</a>
                     </li>
                     <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#logs">Log History</a></li>
-                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#signup">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
@@ -84,7 +84,7 @@
             <div class="container" id="pumpSystem">
                 <div class="row">
                     <div class="col-lg-8 mx-auto">
-                        <h2 class="text-white mb-4">Slide the switch to turn on water pump</h2>
+                        <h2 class="text-white lg-4">Slide the switch to turn on water pump</h2>
                         <br><br><br><br><br><br>
                         <form class="form" @click.prevent="updateStatus">
                             <label class="switch">
@@ -101,21 +101,21 @@
                         </form>
                     </div>
                     <div class="col-lg-8 mx-auto">
-                        <h2 class="text-white mb-4">Auto Watering time set</h2>
+                        <h2 class="text-white lg-4">Auto Watering time set</h2>
                         <div class="row text-white justify-content-center">
-                            <div class="col-sm-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start</div>
-                            <div class="col-sm-2"></div>
-                            <div class="col-sm-2">Stop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                            <div class="col-lg-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start</div>
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-2">Stop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                         </div>
                         <form class="form-group" @submit.prevent="updateTime">
                             <div class="row justify-content-center">
-                                <input type="number" min=0 max=23 class="form-control col-sm-1 mx-2" v-model="initHour" placeholder="00" required>
-                                <input type="number" min=0 max=59 class="form-control col-sm-1 mx-2" v-model="initMin" placeholder="00" required>
-                                <div class="col-sm-1">&nbsp;</div>
-                                <input type="number" min=0 max=23 class="form-control col-sm-1 mx-2" v-model="finHour" placeholder="00" required > 
-                                <input type="number" min=0 max=59 class="form-control col-sm-1 mx-2" v-model="finMin" placeholder="00" required>
+                                <input type="number" min=0 max=23 class="form-control col-lg-1 mx-2" v-model="initHour" placeholder="00" required>
+                                <input type="number" min=0 max=59 class="form-control col-lg-1 mx-2" v-model="initMin" placeholder="00" required>
+                                <div class="col-lg-1">&nbsp;</div>
+                                <input type="number" min=0 max=23 class="form-control col-lg-1 mx-2" v-model="finHour" placeholder="00" required > 
+                                <input type="number" min=0 max=59 class="form-control col-lg-1 mx-2" v-model="finMin" placeholder="00" required>
                             </div><br>
-                            <button type="submit" class="btn btn-primary col-sm-3 justify-content-center">SetTime</button>
+                            <button type="submit" class="btn btn-primary col-lg-3 justify-content-center">SetTime</button>
                         </form>
 
                         <br><br><br><br><br><br>
@@ -135,7 +135,7 @@
                         <h5 class="card-title">Log ID : {{i.id}} | {{i.date}}</h5>
                         <br>
                         <p class="card-text">Soil moisture : {{i.SoilMoisture}}
-                            , Water pump statue : {{i.pumpStatus}}<br>
+                            , Water pump status : {{i.pumpStatus}}<br>
                             Temperature : {{parseFloat(i.temperature).toFixed(2)}} , Humidity : {{parseFloat(i.humidity).toFixed(2)}}
                         <div v-if="i.ControlBy!=null">Control By : {{i.ControlBy}}</div>
                         </p>
@@ -146,13 +146,13 @@
         </div>
     </section>
     <!-- Contact-->
-    <section class="contact-section bg-black">
+    <section id="contact" class="contact-section bg-black">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-3 mb-md-0">
                     <div class="card py-4 h-100">
                         <div class="card-body text-center">
-                            <i class="fas fa-map-marked-alt text-primary mb-2"></i>
+                            <i class="fas fa-laptop-code text-primary mb-2"></i>
                             <h4 class="text-uppercase m-0">Nitipon Thoophom</h4>
                             <hr class="my-4" />
                             <div class="small text-black-50">Student ID : 6203051613034</div>
@@ -162,20 +162,20 @@
                 <div class="col-md-4 mb-3 mb-md-0">
                     <div class="card py-4 h-100">
                         <div class="card-body text-center">
-                            <i class="fas fa-envelope text-primary mb-2"></i>
-                            <h4 class="text-uppercase m-0">Email</h4>
+                            <i class="fas fa-laptop-code text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">Anirut khuadtong</h4>
                             <hr class="my-4" />
-                            <div class="small text-black-50"><a href="#!">hello@yourdomain.com</a></div>
+                            <div class="small text-black-50">Student ID : 6103051623154</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3 mb-md-0">
                     <div class="card py-4 h-100">
                         <div class="card-body text-center">
-                            <i class="fas fa-mobile-alt text-primary mb-2"></i>
-                            <h4 class="text-uppercase m-0">Phone</h4>
+                            <i class="fas fa-laptop-code text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">Sa-on Kaewnoi</h4>
                             <hr class="my-4" />
-                            <div class="small text-black-50">+1 (555) 902-8832</div>
+                            <div class="small text-black-50">Student ID : 6103051623146</div>
                         </div>
                     </div>
                 </div>

@@ -1,19 +1,16 @@
 #include <WiFi.h>
 #include <FirebaseESP32.h>
-#include <ctime>    //time_t
-//#include <iostream>   //cout
+#include <ctime>
 #include "DHT.h"
-
 
 #define FIREBASE_HOST "smartgarden-5edd9.firebaseio.com"
 #define FIREBASE_AUTH "D2itmSj9FpISf4Do8vZYMOf8BcMrUTi28aaf48QR"
-#define WIFI_SSID "Room221_2.4G"
-#define WIFI_PASSWORD "Jummaidai"
+#define WIFI_SSID "*********" //WiFi SSID
+#define WIFI_PASSWORD "*********" //WiFi Password
 DHT dht(18, DHT22);
 FirebaseData firebaseData;
 
 void setup() {
-
   Initialization();
   WiFiConnection();
 }
@@ -60,7 +57,7 @@ void loop() {
     manualSwitch();
   }
 
-  webClick();
+  webClick();     //check web is clicked?
 
   if (Firebase.setTimestamp(firebaseData, "/serverTime")) {
     std::time_t result = firebaseData.intData() + 25200;
@@ -70,7 +67,7 @@ void loop() {
     int minuteInt = date.substring(14, 16).toInt();
     getInitialTimeSet();
     getFinalTimeSet();
-    if ((hourInt == startHour) && (minuteInt == startMin)) {    //Turn on water pump  ======= > && (minuteInt == 15)
+    if ((hourInt == startHour) && (minuteInt == startMin)) {    //Turn on water pump
       Serial.println("This line in AutoWatering");
       path =  "newLog/" + getLog();
       value = readSoilMoisture();
@@ -97,7 +94,7 @@ void loop() {
     else if ((hourInt == stopHour) && (minuteInt == stopMin)) {
       path =  "newLog/" + getLog();
       value = readSoilMoisture();
-      if (value < 55) {             //watering for 1 hour but soil moisture still low
+      if (value < 55) {             //watering but soil moisture still low
         Serial.println("Something wrong with Water system please check!!! \n");
         if (Firebase.setString(firebaseData, path + "/ControlBy", "Automation"))
           Serial.println("watering System ERROR!!");
@@ -117,7 +114,7 @@ void loop() {
       updateLog();
       delay(45000);
     }
-    else if (minuteInt % 30 == 0) {       //keep log to database without pump control
+    else if (minuteInt % 30 == 0) {       //keep log to database
       path =  "newLog/" + getLog();
       int value = readSoilMoisture();
       addPumpStatus();
@@ -142,7 +139,7 @@ String getLog() {
     logPath = String(logCount);
   }
   if (Firebase.setInt(firebaseData, "/LogKeep/logCount", logCount));
-  if (Firebase.setInt(firebaseData, "/newLog/" + logPath + "/id", logCount));
+    if (Firebase.setInt(firebaseData, "/newLog/" + logPath + "/id", logCount));
 
   return logPath;
 }
@@ -180,17 +177,8 @@ void webClick() {
           setTH();
           updateLog();
         }
-        else {
-          Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
-        }
-      }
-      else {
-        Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
       }
     }
-  }
-  else {
-    Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
   }
 }
 
@@ -206,16 +194,7 @@ void manualSwitch() {
       addDate();
       updateLog();
     }
-
-    else {
-      Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
-    }
   }
-  else {
-    Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
-  }
-
-
 }
 
 void updateLog() {
@@ -248,27 +227,16 @@ void pumpSwitch(boolean con) {
     else{
       digitalWrite(21,LOW);
       Serial.println("OFF");
-    }
-      
-  }
-  else {
-    Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
+    } 
   }
 }
 
 int readSoilMoisture() {
   int value = analogRead(34);
-  //Serial.print("ADC Value : ");
-  //Serial.println(value);
   value = map(value, 4095, 0, 0, 100);
   Serial.print("Soil moisture Value : ");
   Serial.println(value);
-
-  if (Firebase.setFloat(firebaseData, path + "/SoilMoisture", value));
-  else {
-    Serial.println("FAIL ==> REASON: " + firebaseData.errorReason());
-  }
-
+  Firebase.setFloat(firebaseData, path + "/SoilMoisture", value);
   return value;
 }
 
@@ -280,8 +248,6 @@ void getInitialTimeSet() {
   if (Firebase.getInt(firebaseData,  "timeControl/time/initialMin")) {
     startMin = firebaseData.intData();
   }
-  //Serial.print("Start time : "); Serial.print(startHour);
-  //Serial.print(" : "); Serial.println(startMin);
 }
 
 void getFinalTimeSet() {
@@ -291,9 +257,6 @@ void getFinalTimeSet() {
   if (Firebase.getInt(firebaseData,  "timeControl/time/finalMin")) {
     stopMin = firebaseData.intData();
   }
-  //Serial.print("End time : "); Serial.print(stopHour);
-  //Serial.print(" : "); Serial.println(stopMin);
-
 }
 
 void setTH() {
